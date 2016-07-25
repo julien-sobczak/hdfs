@@ -65,6 +65,10 @@ func (fi *FileInfo) Name() string {
 	return fi.name
 }
 
+func (fi *FileInfo) BlockReplication() uint32 {
+	return fi.status.GetBlockReplication()
+}
+
 func (fi *FileInfo) Size() int64 {
 	return int64(fi.status.GetLength())
 }

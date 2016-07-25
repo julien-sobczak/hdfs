@@ -10,6 +10,7 @@ import (
 
 var knownCommands = []string{
 	"ls",
+	"lsr",
 	"rm",
 	"mv",
 	"mkdir",

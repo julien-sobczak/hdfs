@@ -17,6 +17,7 @@ The flags available are a subset of the POSIX ones, but should behave similarly.
 
 Valid commands:
   ls [-lah] [FILE]...
+  lsr [FILE]...
   rm [-rf] FILE...
   mv [-fT] SOURCE... DEST
   mkdir [-p] FILE...
@@ -37,6 +38,8 @@ Valid commands:
 	lsl    = lsOpts.Bool('l')
 	lsa    = lsOpts.Bool('a')
 	lsh    = lsOpts.Bool('h')
+
+	lsrOpts = getopt.New()
 
 	rmOpts = getopt.New()
 	rmr    = rmOpts.Bool('r')
@@ -75,6 +78,7 @@ Valid commands:
 
 func init() {
 	lsOpts.SetUsage(printHelp)
+	lsrOpts.SetUsage(printHelp)
 	rmOpts.SetUsage(printHelp)
 	mvOpts.SetUsage(printHelp)
 	touchOpts.SetUsage(printHelp)
@@ -96,6 +100,9 @@ func main() {
 	case "ls":
 		lsOpts.Parse(argv)
 		ls(lsOpts.Args(), *lsl, *lsa, *lsh)
+	case "lsr":
+		lsrOpts.Parse(argv)
+		lsr(lsrOpts.Args())
 	case "rm":
 		rmOpts.Parse(argv)
 		rm(rmOpts.Args(), *rmr, *rmf)
