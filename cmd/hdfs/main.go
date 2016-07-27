@@ -39,8 +39,6 @@ Valid commands:
 	lsa    = lsOpts.Bool('a')
 	lsh    = lsOpts.Bool('h')
 
-	lsrOpts = getopt.New()
-
 	rmOpts = getopt.New()
 	rmr    = rmOpts.Bool('r')
 	rmf    = rmOpts.Bool('f')
@@ -78,7 +76,6 @@ Valid commands:
 
 func init() {
 	lsOpts.SetUsage(printHelp)
-	lsrOpts.SetUsage(printHelp)
 	rmOpts.SetUsage(printHelp)
 	mvOpts.SetUsage(printHelp)
 	touchOpts.SetUsage(printHelp)
@@ -101,8 +98,7 @@ func main() {
 		lsOpts.Parse(argv)
 		ls(lsOpts.Args(), *lsl, *lsa, *lsh)
 	case "lsr":
-		lsrOpts.Parse(argv)
-		lsr(lsrOpts.Args())
+		lsr(argv[1:])
 	case "rm":
 		rmOpts.Parse(argv)
 		rm(rmOpts.Args(), *rmr, *rmf)
