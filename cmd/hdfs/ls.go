@@ -14,13 +14,19 @@ import (
 )
 
 func ls(paths []string, long, all, humanReadable bool) {
+	original_paths := paths
 	paths, client, err := getClientAndExpandedPaths(paths)
 	if err != nil {
 		fatal(err)
 	}
 
-	if len(paths) == 0 {
-		paths = []string{userDir()}
+	if len(paths) == 0 {		
+		if len(original_paths) > 0 {
+			fmt.Fprintf(os.Stderr, "ls: '%s': No such file or directory\n", original_paths[0])
+		} else {
+			fmt.Fprintf(os.Stderr, "ls: No such file or directory\n")
+		}
+		os.Exit(1)
 	}
 
 	files := make([]string, 0, len(paths))

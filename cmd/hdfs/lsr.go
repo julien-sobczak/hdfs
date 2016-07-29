@@ -14,13 +14,19 @@ import (
 )
 
 func lsr(paths []string) {
+	original_paths := paths
 	paths, client, err := getClientAndExpandedPaths(paths)
 	if err != nil {
 		fatal(err)
 	}
 
 	if len(paths) == 0 {
-		paths = []string{userDir()}
+		if len(original_paths) > 0 {
+			fmt.Fprintf(os.Stderr, "lsr: '%s': No such file or directory\n", original_paths[0])
+		} else {
+			fmt.Fprintf(os.Stderr, "lsr: No such file or directory\n")
+		}
+		os.Exit(1)
 	}
 
 	tw := lsrTabWriter()
