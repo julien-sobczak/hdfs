@@ -27,14 +27,13 @@ func put(args []string) {
 	
 		writer, err := client.Create(dests[0])
 		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			return
+			fatal(err)
 		}
 	
 		defer writer.Close()
 		_, err = io.Copy(writer, os.Stdin)
 		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
+			fatal(err)
 		}
 		
 		
@@ -71,16 +70,19 @@ func put(args []string) {
 			fatal(err)
 		}
 	
+		var err_walking error = nil
 		mode := 0755 | os.ModeDir
 		err = filepath.Walk(source, func(p string, fi os.FileInfo, err error) error {
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)
+				err_walking = err
 				return nil
 			}
 	
 			rel, err := filepath.Rel(source, p)
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)
+				err_walking = err
 				return nil
 			}
 	
@@ -88,27 +90,33 @@ func put(args []string) {
 			if fi.IsDir() {
 				client.Mkdir(fullDest, mode)
 			} else {
-				writer, err := client.Create(fullDest)
-				if err != nil {
-					fmt.Fprintln(os.Stderr, err)
-					return nil
-				}
-	
-				defer writer.Close()
 				reader, err := os.Open(p)
 				if err != nil {
 					fmt.Fprintln(os.Stderr, err)
+					err_walking = err
 					return nil
 				}
-	
 				defer reader.Close()
+
+				writer, err := client.Create(fullDest)
+				if err != nil {
+					fmt.Fprintln(os.Stderr, err)
+					err_walking = err
+					return nil
+				}
+				defer writer.Close()
+				
 				_, err = io.Copy(writer, reader)
 				if err != nil {
 					fmt.Fprintln(os.Stderr, err)
+					err_walking = err
 				}
 			}
 	
 			return nil
 		})
+		if err_walking != nil {
+			os.Exit(1)
+		}
 	}
 }
