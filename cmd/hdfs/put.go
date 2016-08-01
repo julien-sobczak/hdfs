@@ -9,13 +9,13 @@ import (
 )
 
 func put(args []string) {
-	if len(args) != 1 && len(args) != 2 {
+	if len(args) != 2 {
 		printHelp()
 	}
 
-	if len(args) == 1 { // Read from Stdin
+	if args[0] == "-" { // Read from Stdin
 		
-		dests, nn, err := normalizePaths(args)
+		dests, nn, err := normalizePaths(args[1:])
 		if err != nil {
 			fatal(err)
 		}
