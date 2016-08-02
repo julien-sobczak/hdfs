@@ -60,6 +60,7 @@ func traversePath(tw *tabwriter.Writer, client *hdfs.Client, name string, option
     if file.IsDir() {
     	if !root||options.directoryAsPlainFile {
     		showStatus(tw, name, file, options)
+    		tw.Flush()
     	}
     	if !options.directoryAsPlainFile&&(root||options.recursive) {
 			dirReader, err := client.Open(name)
